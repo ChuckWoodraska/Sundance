@@ -1,0 +1,94 @@
+{% extends "base.jinja2" %}
+{% block page_content %}
+    <div id="date"></div>
+    <div id="time"></div>
+    <div id="weather"></div>
+    <br>
+    <div id="blocks" class="row">
+        <div id="color_block" class="col-md-6"
+             style="height: 100px; width: 100px; text-align: center; display: inline-block;"></div>
+        <div id="coat_block" class="col-md-6" style="text-align: center">
+            {% if coat %}
+                <img src="{{ url_for('static', filename='images/coat.png') }}" style="height: 100px; width: 100px;">
+            {% endif %}
+        </div>
+    </div>
+    <link href="{{ url_for('static', filename='sundance.css') }}" rel="stylesheet">
+    {% block scripts %}
+        {{ super() }}
+        <script src="{{ url_for('static', filename='jquery.simpleWeather.min.js') }}"></script>
+        <script>
+            function startTime() {
+                var today = new Date();
+                var hour = today.getHours();
+                var minute = today.getMinutes();
+                var second = today.getSeconds();
+                var day = today.getDate();
+                var locale = "en-us";
+                var month = today.toLocaleString(locale, {month: "long"});
+                var year = today.getFullYear();
+                minute = checkTime(minute);
+                second = checkTime(second);
+                document.getElementById('date').innerHTML =
+                        month + " " + day + " " + year;
+                document.getElementById('time').innerHTML =
+                        hour + ":" + minute + ":" + second;
+                var t = setTimeout(startTime, 500);
+            }
+            function checkTime(i) {
+                if (i < 10) {
+                    i = "0" + i
+                }
+                ;  // add zero in front of numbers < 10
+                return i;
+            }
+
+            function loadWeather(location) {
+                $.simpleWeather({
+                    location: location,
+                    woeid: '',
+                    unit: 'c',
+                    success: function (weather) {
+                        if (weather.temp > 30) {
+                            $("#color_block").css('background-color', 'red');
+                        }
+                        else if (weather.temp > 22) {
+                            $("#color_block").css('background-color', 'orange');
+                        }
+                        else if (weather.temp > 15) {
+                            $("#color_block").css('background-color', 'yellow');
+                        }
+                        else {
+                            $("#color_block").css('background-color', 'light blue');
+                        }
+                        html = '<h2><i class="icon-' + weather.code + '"></i> ' + weather.temp + '&deg;' + weather.units.temp + '</h2>';
+                        html += '<ul><li>' + weather.city + ', ' + weather.region + '</li>';
+                        html += '<li class="currently">' + weather.currently + '</li><br><br>';
+                        html += '<li>' + weather.wind.direction + ' ' + weather.wind.speed + ' ' + weather.units.speed + '</li></ul>';
+
+                        $("#weather").html(html);
+                    },
+                    error: function (error) {
+                        $("#weather").html('<p>' + error + '</p>');
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                startTime()
+                if (navigator.geolocation) {
+                    var myLocation = navigator.geolocation.getCurrentPosition(function (position) {
+                        loadWeather(position.coords.latitude + ',' + position.coords.longitude);
+                    });
+                }
+
+            });
+
+        </script>
+        <script type="text/javascript">
+            setTimeout(function () {
+                location.reload();
+            }, 60 * 1000);
+        </script>
+    {% endblock %}
+{% endblock %}

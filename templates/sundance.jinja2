@@ -13,10 +13,10 @@
             {% endif %}
         </div>
     </div>
-    <link href="{{ url_for('static', filename='sundance.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/sundance.css') }}" rel="stylesheet">
     {% block scripts %}
         {{ super() }}
-        <script src="{{ url_for('static', filename='jquery.simpleWeather.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery.simpleWeather.min.js') }}"></script>
         <script>
             function startTime() {
                 var today = new Date();

@@ -1,0 +1,5 @@
+geopy
+flask
+sklearn
+numpy
+pymysql

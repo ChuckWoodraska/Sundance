@@ -1,5 +1,4 @@
 
-.gitignore
 .idea/
 app/frontend/
 *.ini

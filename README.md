@@ -1,3 +1,4 @@
+# Sundance
 Sundance is a machine learning project that contains three parts to generate, predict, and present info on whether you should wear a jacket today or not.
 
 Sundance.py is the file used to generate data for the day that you would run on some sort of schedule or cron.

@@ -31,7 +31,7 @@ try:
     ratings = cursor.fetchall()
 
     new_data = asarray(data)
-    X = new_data[:, [x for x in range(0, 25)]]
+    X = new_data[:, list(range(25))]
     Y = asarray([rating[0] for rating in ratings])
 
     clf = RandomForestClassifier(n_estimators=10)
@@ -43,8 +43,8 @@ try:
     cursor.execute(sql)
     ids = cursor.fetchall()
 
+    sql = "UPDATE weather SET rating=%s WHERE id=%s"
     for x in range(len(ids)):
-        sql = "UPDATE weather SET rating=%s WHERE id=%s"
         sql_params = [str(predictions[x]), ids[x][0]]
         cursor.execute(sql, sql_params)
         connection.commit()

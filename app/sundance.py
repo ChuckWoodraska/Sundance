@@ -9,43 +9,44 @@ import os
 geolocator = Nominatim()
 location = geolocator.reverse("32.90, -79.89")
 baseurl = "https://query.yahooapis.com/v1/public/yql?"
-yql_query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='{}, {}')".format(
-    location.raw['address']['city'], location.raw['address']['state'])
+yql_query = f"select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='{location.raw['address']['city']}, {location.raw['address']['state']}')"
+
 yql_url = baseurl + urllib.parse.urlencode({'q': yql_query}) + "&format=json"
 result = urllib.request.urlopen(yql_url).read()
 data = json.loads(result.decode('utf-8'))
 short_data = data['query']['results']['channel']
-weather_data = {}
-weather_data['temp'] = short_data['item']['condition']['temp']
-weather_data['code'] = short_data['item']['condition']['code']
-weather_data['today_code'] = short_data['item']['forecast'][0]['code']
-weather_data['high'] = short_data['item']['forecast'][0]['high']
-weather_data['low'] = short_data['item']['forecast'][0]['low']
-weather_data['wind_chill'] = short_data['wind']['chill']
-weather_data['wind_direction'] = short_data['wind']['direction']
-weather_data['wind_speed'] = short_data['wind']['speed']
-weather_data['humidity'] = short_data['atmosphere']['humidity']
-weather_data['pressure'] = short_data['atmosphere']['pressure']
-weather_data['rising'] = short_data['atmosphere']['rising']
-weather_data['visibility'] = short_data['atmosphere']['visibility']
-weather_data['forecast_low1'] = short_data['item']['forecast'][1]['low']
-weather_data['forecast_high1'] = short_data['item']['forecast'][1]['high']
-weather_data['forecast_code1'] = short_data['item']['forecast'][1]['code']
-weather_data['forecast_low2'] = short_data['item']['forecast'][2]['low']
-weather_data['forecast_high2'] = short_data['item']['forecast'][2]['high']
-weather_data['forecast_code2'] = short_data['item']['forecast'][2]['code']
-weather_data['forecast_low3'] = short_data['item']['forecast'][3]['low']
-weather_data['forecast_high3'] = short_data['item']['forecast'][3]['high']
-weather_data['forecast_code3'] = short_data['item']['forecast'][3]['code']
-weather_data['forecast_low4'] = short_data['item']['forecast'][4]['low']
-weather_data['forecast_high4'] = short_data['item']['forecast'][4]['high']
-weather_data['forecast_code4'] = short_data['item']['forecast'][4]['code']
-weather_data['city'] = short_data['location']['city']
-weather_data['country'] = short_data['location']['country']
-weather_data['region'] = short_data['location']['region']
-
 sunrise = time.strptime(data['query']['results']['channel']['astronomy']['sunrise'], "%I:%M %p")
-weather_data['sunrise'] = int(time.strftime("%H%M", sunrise))
+weather_data = {
+    'temp': short_data['item']['condition']['temp'],
+    'code': short_data['item']['condition']['code'],
+    'today_code': short_data['item']['forecast'][0]['code'],
+    'high': short_data['item']['forecast'][0]['high'],
+    'low': short_data['item']['forecast'][0]['low'],
+    'wind_chill': short_data['wind']['chill'],
+    'wind_direction': short_data['wind']['direction'],
+    'wind_speed': short_data['wind']['speed'],
+    'humidity': short_data['atmosphere']['humidity'],
+    'pressure': short_data['atmosphere']['pressure'],
+    'rising': short_data['atmosphere']['rising'],
+    'visibility': short_data['atmosphere']['visibility'],
+    'forecast_low1': short_data['item']['forecast'][1]['low'],
+    'forecast_high1': short_data['item']['forecast'][1]['high'],
+    'forecast_code1': short_data['item']['forecast'][1]['code'],
+    'forecast_low2': short_data['item']['forecast'][2]['low'],
+    'forecast_high2': short_data['item']['forecast'][2]['high'],
+    'forecast_code2': short_data['item']['forecast'][2]['code'],
+    'forecast_low3': short_data['item']['forecast'][3]['low'],
+    'forecast_high3': short_data['item']['forecast'][3]['high'],
+    'forecast_code3': short_data['item']['forecast'][3]['code'],
+    'forecast_low4': short_data['item']['forecast'][4]['low'],
+    'forecast_high4': short_data['item']['forecast'][4]['high'],
+    'forecast_code4': short_data['item']['forecast'][4]['code'],
+    'city': short_data['location']['city'],
+    'country': short_data['location']['country'],
+    'region': short_data['location']['region'],
+    'sunrise': int(time.strftime("%H%M", sunrise)),
+}
+
 sunset = time.strptime(data['query']['results']['channel']['astronomy']['sunset'], "%I:%M %p")
 weather_data['sunset'] = int(time.strftime("%H%M", sunset))
 
